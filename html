@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Photobooth Seru</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="home" class="screen active">
+  <h1>📸 Photobooth Seru</h1>
+  <button onclick="startApp()">Mulai</button>
+</div>
+
+<div id="selection" class="screen">
+  <h2>Pilih Jumlah Foto</h2>
+  <button onclick="selectLayout(2)">2 Foto</button>
+  <button onclick="selectLayout(4)">4 Foto</button>
+</div>
+
+<div id="cameraScreen" class="screen">
+  <video id="video" autoplay></video>
+
+  <div>
+    <select id="filter">
+      <option value="none">Normal</option>
+      <option value="grayscale(1)">Grayscale</option>
+      <option value="sepia(1)">Sepia</option>
+    </select>
+
+    <select id="sticker">
+      <option value="">Tanpa Stiker</option>
+      <option value="😎">😎</option>
+      <option value="❤️">❤️</option>
+      <option value="🔥">🔥</option>
+    </select>
+  </div>
+
+  <input type="text" id="caption" placeholder="Tulis teks di foto...">
+
+  <p id="countdown"></p>
+  <button onclick="startCountdown()">Ambil Foto</button>
+  <p id="counter"></p>
+</div>
+
+<div id="resultScreen" class="screen">
+  <h2>🎉 Hasil Kamu!</h2>
+  <canvas id="canvas"></canvas>
+  <br>
+  <button onclick="downloadImage()">Download</button>
+  <button onclick="resetApp()">Ulangi</button>
+</div>
+
+<audio id="shutter" src="https://www.soundjay.com/camera/camera-click-01.mp3"></audio>
+
+<script src="script.js"></script>
+</body>
+</html>
