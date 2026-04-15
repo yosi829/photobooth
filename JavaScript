@@ -1,0 +1,108 @@
+let video = document.getElementById("video");
+let canvas = document.getElementById("canvas");
+let ctx = canvas.getContext("2d");
+
+let photos = [];
+let maxPhotos = 0;
+
+function showScreen(id) {
+  document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+}
+
+function startApp() {
+  showScreen("selection");
+}
+
+function selectLayout(num) {
+  maxPhotos = num;
+  photos = [];
+  startCamera();
+  showScreen("cameraScreen");
+}
+
+function startCamera() {
+  navigator.mediaDevices.getUserMedia({ video: true })
+    .then(stream => video.srcObject = stream);
+}
+
+// countdown
+function startCountdown() {
+  let count = 3;
+  let el = document.getElementById("countdown");
+
+  let interval = setInterval(() => {
+    el.innerText = count;
+    count--;
+
+    if (count < 0) {
+      clearInterval(interval);
+      el.innerText = "";
+      takePhoto();
+    }
+  }, 1000);
+}
+
+// ambil foto
+function takePhoto() {
+  document.getElementById("shutter").play();
+
+  let tempCanvas = document.createElement("canvas");
+  tempCanvas.width = video.videoWidth;
+  tempCanvas.height = video.videoHeight;
+  let tempCtx = tempCanvas.getContext("2d");
+
+  let filter = document.getElementById("filter").value;
+  video.style.filter = filter;
+
+  tempCtx.filter = filter;
+  tempCtx.drawImage(video, 0, 0);
+
+  // sticker
+  let sticker = document.getElementById("sticker").value;
+  if (sticker) {
+    tempCtx.font = "50px Arial";
+    tempCtx.fillText(sticker, 20, 50);
+  }
+
+  // caption
+  let caption = document.getElementById("caption").value;
+  if (caption) {
+    tempCtx.font = "30px Arial";
+    tempCtx.fillText(caption, 20, tempCanvas.height - 20);
+  }
+
+  photos.push(tempCanvas);
+
+  document.getElementById("counter").innerText =
+    `Foto ${photos.length} / ${maxPhotos}`;
+
+  if (photos.length === maxPhotos) {
+    createCollage();
+    showScreen("resultScreen");
+  }
+}
+
+// kolase
+function createCollage() {
+  canvas.width = 300;
+  canvas.height = 150 * maxPhotos;
+
+  photos.forEach((p, i) => {
+    ctx.drawImage(p, 0, i * 150, 300, 150);
+  });
+}
+
+// download
+function downloadImage() {
+  let link = document.createElement("a");
+  link.download = "photobooth.png";
+  link.href = canvas.toDataURL();
+  link.click();
+}
+
+// reset
+function resetApp() {
+  photos = [];
+  showScreen("home");
+}
